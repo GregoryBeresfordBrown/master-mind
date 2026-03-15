@@ -16,7 +16,7 @@ struct MasterMindViewModelTest {
     func viewModel_reset_hasEmptyState() throws {
         let model = MasterMindViewModel()
 
-        model.reset(feedback: [.correctInWrongPosition, .noMatch, .correctInCorrectPosition])
+        model.reset(feedback: [.correctInWrongPosition, .noMatch, .correctInCorrectPosition], deadline: .distantFuture)
 
         try #require(
             model.gameState == [
@@ -31,11 +31,11 @@ struct MasterMindViewModelTest {
     func viewModel_reset_destroyGuess() throws {
         let model = MasterMindViewModel()
 
-        model.reset(feedback: [.correctInWrongPosition, .noMatch, .correctInCorrectPosition])
+        model.reset(feedback: [.correctInWrongPosition, .noMatch, .correctInCorrectPosition], deadline: .distantFuture)
 
         model.gameState[0].guess = "A"
 
-        model.reset(feedback: [.correctInWrongPosition, .noMatch, .correctInCorrectPosition])
+        model.reset(feedback: [.correctInWrongPosition, .noMatch, .correctInCorrectPosition], deadline: .distantFuture)
 
         try #require(
             model.gameState == [
@@ -50,7 +50,7 @@ struct MasterMindViewModelTest {
     func viewModel_update_preservesGuess() throws {
         let model = MasterMindViewModel()
 
-        model.reset(feedback: [.correctInWrongPosition, .noMatch, .correctInCorrectPosition])
+        model.reset(feedback: [.correctInWrongPosition, .noMatch, .correctInCorrectPosition], deadline: .distantFuture)
 
         model.gameState[0].guess = "A"
 

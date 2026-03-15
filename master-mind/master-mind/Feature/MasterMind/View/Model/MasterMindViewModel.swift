@@ -10,17 +10,26 @@ import SwiftUI
 @Observable
 class MasterMindViewModel: MasterMindViewInterface {
     var gameState: [MasterMindGuessState] = []
+    var deadline: Date?
     var currentGuess: String {
         String(gameState.map(\.guess))
     }
+    var remainingTime: TimeInterval? {
+        guard let deadline else { return nil }
+        return max(0, deadline.timeIntervalSince(.now))
+    }
 
-    func reset(feedback: [MasterMindFeedback]) {
+    func reset(
+        feedback: [MasterMindFeedback],
+        deadline: Date
+    ) {
         gameState = feedback.map {
             MasterMindGuessState(
                 guess: "-",
                 color: $0.color
             )
         }
+        self.deadline = deadline
     }
 
     func update(feedback: [MasterMindFeedback]) {

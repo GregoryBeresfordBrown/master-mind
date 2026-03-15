@@ -48,7 +48,7 @@ class MasterMindGame {
     private let gameClock: GameClock
 
     private var secret: [Character] = []
-    private var timelimit: Date
+    private(set) var timelimit: Date
 
     init(
         secretGenerator: SecretGenerator = DefaultSecretGenerator(),

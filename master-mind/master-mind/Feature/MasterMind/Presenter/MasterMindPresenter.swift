@@ -5,8 +5,10 @@
 //  Created by Gregory Beresford Brown on 15/03/2026.
 //
 
+import Foundation
+
 protocol MasterMindViewInterface: AnyObject {
-    @MainActor func reset(feedback: [MasterMindFeedback])
+    @MainActor func reset(feedback: [MasterMindFeedback], deadline: Date)
     @MainActor func update(feedback: [MasterMindFeedback])
 }
 
@@ -30,9 +32,9 @@ class MasterMindPresenter: MasterMindViewPresenter {
         do {
             switch try gameInteractor.submit(guess: guess) {
             case .failed:
-                break; // Todo: navigate
+                resetGame()
             case .success:
-                break; // Todo: navigate
+                resetGame()
             case .ongoing(let feedback):
                 view.update(feedback: feedback)
             }
@@ -47,7 +49,8 @@ class MasterMindPresenter: MasterMindViewPresenter {
         view.reset(
             feedback: gameInteractor.startNewGame(
                 limit: 60
-            )
+            ),
+            deadline: gameInteractor.timelimit
         )
     }
 }
