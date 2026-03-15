@@ -9,5 +9,9 @@ import SwiftUI
 
 @Observable
 class MasterMindViewModel: MasterMindViewInterface {
+    var feedback: [MasterMindFeedback] = []
 
+    func update(state: [MasterMindFeedback]) {
+        feedback = state
+    }
 }

@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-protocol MasterMindViewPresenter {}
+protocol MasterMindViewPresenter {
+    func viewDidAppear()
+}
 
 struct MasterMindView: View {
     let viewModel: MasterMindViewModel
@@ -21,5 +23,8 @@ struct MasterMindView: View {
             Text("Hello, world!")
         }
         .padding()
+        .onAppear {
+            presenter.viewDidAppear()
+        }
     }
 }
