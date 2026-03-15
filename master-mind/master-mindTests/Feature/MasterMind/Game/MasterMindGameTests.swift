@@ -29,13 +29,22 @@ struct MasterMindGameTests {
         try #require(state.count == generation.secret.count)
         try #require(state.allSatisfy { $0 == .noMatch } )
     }
+
+    @Test func submitGuess_withCorrectMatch_returnsCorrectFeedback() throws {
+        let game = MasterMindGame(secretGenerator: generation)
+        let _ = game.startNewGame()
+        let state = game.submit(guess: "ABCD")
+
+        try #require(state.count == generation.secret.count)
+        try #require(state.allSatisfy { $0 == .correctInCorrectPosition } )
+    }
 }
 
 
 struct FixedSecret: SecretGenerator {
     var secret: String = "ABCD"
 
-    func generateSecret() -> String {
-        secret
+    func generateSecret() -> Array<Character> {
+        Array(secret)
     }
 }

@@ -6,7 +6,7 @@
 //
 
 protocol SecretGenerator {
-    func generateSecret() -> String
+    func generateSecret() -> Array<Character>
 }
 
 enum MasterMindFeedback: Equatable {
@@ -17,21 +17,27 @@ enum MasterMindFeedback: Equatable {
 
 class MasterMindGame {
     private let secretGenerator: SecretGenerator
-    private var secret: String
+    private var secret: [Character] = []
 
     init(secretGenerator: SecretGenerator) {
         self.secretGenerator = secretGenerator
-        self.secret = ""
+        self.secret = []
     }
 
     func startNewGame() -> [MasterMindFeedback] {
         secret = secretGenerator.generateSecret()
-        print("+++ New Game", secret)
+        print("+++ New Game", String(secret))
 
         return (0..<secret.count).map { _ in .noMatch }
     }
 
     func submit(guess: String) -> [MasterMindFeedback] {
-        return (0..<secret.count).map { _ in .noMatch }
+        let guess = Array(guess.uppercased())
+
+        return (0..<secret.count).map { (i:Int) -> MasterMindFeedback in
+            secret[i] == guess[i]
+                ? .correctInCorrectPosition
+                : .noMatch
+        }
     }
 }
