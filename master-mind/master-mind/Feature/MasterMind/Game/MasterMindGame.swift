@@ -15,6 +15,10 @@ enum MasterMindFeedback: Equatable {
     case noMatch
 }
 
+enum MasterMindGameError: Error {
+    case badGuessLength
+}
+
 class MasterMindGame {
     private let secretGenerator: SecretGenerator
     private var secret: [Character] = []
@@ -31,7 +35,10 @@ class MasterMindGame {
         return (0..<secret.count).map { _ in .noMatch }
     }
 
-    func submit(guess: String) -> [MasterMindFeedback] {
+    func submit(guess: String) throws(MasterMindGameError) -> [MasterMindFeedback] {
+        guard guess.count == secret.count else {
+            throw .badGuessLength
+        }
         let guess = Array(guess.uppercased())
 
         return (0..<secret.count).map { (i:Int) -> MasterMindFeedback in

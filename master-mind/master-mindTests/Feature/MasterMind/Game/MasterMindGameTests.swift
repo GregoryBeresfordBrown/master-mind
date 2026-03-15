@@ -24,7 +24,7 @@ struct MasterMindGameTests {
     @Test func submitGuess_withNoMatches_returnsFeedbackWithNoMatches() throws {
         let game = MasterMindGame(secretGenerator: generation)
         let _ = game.startNewGame()
-        let state = game.submit(guess: "EFGH")
+        let state = try game.submit(guess: "EFGH")
 
         try #require(state.count == generation.secret.count)
         try #require(state.allSatisfy { $0 == .noMatch } )
@@ -33,18 +33,16 @@ struct MasterMindGameTests {
     @Test func submitGuess_withCorrectMatch_returnsCorrectFeedback() throws {
         let game = MasterMindGame(secretGenerator: generation)
         let _ = game.startNewGame()
-        let state = game.submit(guess: "ABCD")
+        let state = try game.submit(guess: "ABCD")
 
-        try #require(state.count == generation.secret.count)
         try #require(state.allSatisfy { $0 == .correctInCorrectPosition } )
     }
 
     @Test func submitGuess_withIncorrectMatches_returnsPositionFeedback() throws {
         let game = MasterMindGame(secretGenerator: generation)
         let _ = game.startNewGame()
-        let state = game.submit(guess: "BCEF")
+        let state = try game.submit(guess: "BCEF")
 
-        try #require(state.count == generation.secret.count)
         try #require(
             state == [
                 .correctInWrongPosition,
@@ -58,10 +56,18 @@ struct MasterMindGameTests {
     @Test func submitGuess_withAllIncorrectMatches_returnsPositionFeedback() throws {
         let game = MasterMindGame(secretGenerator: generation)
         let _ = game.startNewGame()
-        let state = game.submit(guess: "CDAB")
+        let state = try game.submit(guess: "CDAB")
 
-        try #require(state.count == generation.secret.count)
         try #require(state.allSatisfy { $0 == .correctInWrongPosition } )
+    }
+
+    @Test func submitGuess_withLengthMismatch_throwsBadGuessFormat() throws {
+        let game = MasterMindGame(secretGenerator: generation)
+        let _ = game.startNewGame()
+
+        #expect(throws: MasterMindGameError.badGuessLength) {
+            try game.submit(guess: "CD")
+        }
     }
 }
 
