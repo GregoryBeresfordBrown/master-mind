@@ -37,7 +37,16 @@ class MasterMindGame {
         return (0..<secret.count).map { (i:Int) -> MasterMindFeedback in
             secret[i] == guess[i]
                 ? .correctInCorrectPosition
-                : .noMatch
+                : secretContains(char: guess[i], after: i)
         }
+    }
+
+    private func secretContains(char: Character, after i: Int) -> MasterMindFeedback {
+        for j in i..<secret.count {
+            if secret[j] == char {
+                return .correctInWrongPosition
+            }
+        }
+        return .noMatch
     }
 }

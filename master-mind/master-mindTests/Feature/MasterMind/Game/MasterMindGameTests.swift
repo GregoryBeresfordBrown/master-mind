@@ -38,6 +38,22 @@ struct MasterMindGameTests {
         try #require(state.count == generation.secret.count)
         try #require(state.allSatisfy { $0 == .correctInCorrectPosition } )
     }
+
+    @Test func submitGuess_withIncorrectMatches_returnsPositionFeedback() throws {
+        let game = MasterMindGame(secretGenerator: generation)
+        let _ = game.startNewGame()
+        let state = game.submit(guess: "BCEF")
+
+        try #require(state.count == generation.secret.count)
+        try #require(
+            state == [
+                .correctInWrongPosition,
+                .correctInWrongPosition,
+                .noMatch,
+                .noMatch
+            ]
+        )
+    }
 }
 
 
