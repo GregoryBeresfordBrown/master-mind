@@ -12,16 +12,24 @@ protocol MasterMindViewInterface: AnyObject {
     @MainActor func update(feedback: [MasterMindFeedback])
 }
 
+protocol MasterMindRouter {
+    @MainActor func routeToSuccess()
+    @MainActor func routeToFailure()
+}
+
 class MasterMindPresenter: MasterMindViewPresenter {
     private let gameInteractor: MasterMindGame
     private let view: MasterMindViewInterface
+    private let router: MasterMindRouter
 
     init(
         gameInteractor: MasterMindGame,
-        view: MasterMindViewInterface
+        view: MasterMindViewInterface,
+        router: MasterMindRouter
     ) {
         self.gameInteractor = gameInteractor
         self.view = view
+        self.router = router
     }
 
     func viewDidAppear() {
@@ -32,9 +40,11 @@ class MasterMindPresenter: MasterMindViewPresenter {
         do {
             switch try gameInteractor.submit(guess: guess) {
             case .failed:
-                resetGame()
+                router.routeToFailure()
+
             case .success:
-                resetGame()
+                router.routeToSuccess()
+
             case .ongoing(let feedback):
                 view.update(feedback: feedback)
             }

@@ -8,22 +8,30 @@
 import SwiftUI
 
 class MasterMind {
+    private let router: MasterMindRouter
     private let game = MasterMindGame()
     private let view = MasterMindViewModel()
 
-    init() {}
+    init(router: MasterMindRouter) {
+        self.router = router
+    }
 
     func makeView() -> some View {
         MasterMindView(
             viewModel: view,
             presenter: MasterMindPresenter(
                 gameInteractor: game,
-                view: view
+                view: view,
+                router: router
             )
         )
     }
 }
 
 #Preview {
-    MasterMind().makeView()
+    struct MockRouter: MasterMindRouter {
+        func routeToSuccess() {}
+        func routeToFailure() {}
+    }
+    return MasterMind(router: MockRouter()).makeView()
 }
