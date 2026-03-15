@@ -12,7 +12,8 @@ protocol MasterMindViewPresenter {
 }
 
 struct MasterMindView: View {
-    let viewModel: MasterMindViewModel
+    @Bindable
+    var viewModel: MasterMindViewModel
     let presenter: MasterMindViewPresenter
 
     var body: some View {
@@ -21,8 +22,8 @@ struct MasterMindView: View {
                 .font(.largeTitle)
 
             HStack {
-                LetterPickerView { letter in
-                    print("+++", letter)
+                ForEach(viewModel.gameState.indices, id: \.self) { i in
+                    LetterPickerView(selectedLetter: $viewModel.gameState[i].guess)
                 }
             }
         }

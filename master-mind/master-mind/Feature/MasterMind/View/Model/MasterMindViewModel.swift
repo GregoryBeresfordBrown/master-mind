@@ -30,7 +30,22 @@ class MasterMindViewModel: MasterMindViewInterface {
     }
 }
 
-struct MasterMindGuessState: Equatable {
+@Observable
+class MasterMindGuessState: Equatable, Hashable {
     var guess: Character
     let feedback: MasterMindFeedback
+
+    init(guess: Character, feedback: MasterMindFeedback) {
+        self.guess = guess
+        self.feedback = feedback
+    }
+
+    static func == (lhs: MasterMindGuessState, rhs: MasterMindGuessState) -> Bool {
+        lhs.guess == rhs.guess && lhs.feedback == rhs.feedback
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(guess)
+        hasher.combine(feedback)
+    }
 }
