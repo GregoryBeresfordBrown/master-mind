@@ -17,3 +17,6 @@
     - make a snapshot test
     - is it playable?
     - final touch ups?
+
+Notes:
+    - Using text fields was cumbersome

@@ -17,10 +17,14 @@ struct MasterMindView: View {
 
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("Take a guess!")
+                .font(.largeTitle)
+
+            HStack {
+                LetterPickerView { letter in
+                    print("+++", letter)
+                }
+            }
         }
         .padding()
         .onAppear {
