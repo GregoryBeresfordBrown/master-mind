@@ -20,6 +20,15 @@ struct MasterMindGameTests {
         try #require(state.count == generation.secret.count)
         try #require(state.allSatisfy { $0 == MasterMindFeedback.noMatch } )
     }
+
+    @Test func submitGuess_withNoMatches_returnsFeedbackWithNoMatches() throws {
+        let game = MasterMindGame(secretGenerator: generation)
+        let _ = game.startNewGame()
+        let state = game.submit(guess: "EFGH")
+
+        try #require(state.count == generation.secret.count)
+        try #require(state.allSatisfy { $0 == .noMatch } )
+    }
 }
 
 

@@ -30,4 +30,8 @@ class MasterMindGame {
 
         return (0..<secret.count).map { _ in .noMatch }
     }
+
+    func submit(guess: String) -> [MasterMindFeedback] {
+        return (0..<secret.count).map { _ in .noMatch }
+    }
 }
