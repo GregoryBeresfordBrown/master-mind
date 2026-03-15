@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LetterPickerView: View {
-    private let letters = Array("-0ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    private let letters = Array("-ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     @Binding var selectedLetter: Character
     let color: Color
 
