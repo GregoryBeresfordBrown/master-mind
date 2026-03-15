@@ -6,7 +6,8 @@
 //
 
 protocol MasterMindViewInterface: AnyObject {
-    @MainActor func update(state: [MasterMindFeedback])
+    @MainActor func reset(feedback: [MasterMindFeedback])
+    @MainActor func update(feedback: [MasterMindFeedback])
 }
 
 class MasterMindPresenter: MasterMindViewPresenter {
@@ -22,8 +23,8 @@ class MasterMindPresenter: MasterMindViewPresenter {
     }
 
     func viewDidAppear() {
-        view.update(
-            state: gameInteractor.startNewGame(
+        view.reset(
+            feedback: gameInteractor.startNewGame(
                 limit: 60
             )
         )
