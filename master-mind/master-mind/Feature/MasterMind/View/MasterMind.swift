@@ -30,8 +30,8 @@ class MasterMind {
 
 #Preview {
     struct MockRouter: MasterMindRouter {
-        func routeToSuccess() {}
-        func routeToFailure() {}
+        func routeToSuccess(reset: () -> Void) {}
+        func routeToFailure(reset: () -> Void) {}
     }
     return MasterMind(router: MockRouter()).makeView()
 }

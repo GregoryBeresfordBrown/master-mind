@@ -22,21 +22,54 @@ struct master_mindApp: App {
         WindowGroup {
             switch router.routeState {
             case .game:    masterMind.makeView()
-            case .success: Text("You won!")
-            case .failure: Text("Game over!")
+            case .success: notification("You won!")
+            case .failure: notification("Game over!")
             }
+        }
+    }
+
+    func notification(_ label: String) -> some View {
+        VStack {
+            Text(label)
+                .font(.largeTitle)
+                .padding()
+
+            Button {
+                router.reset()
+            } label: {
+                Text("Retry")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .padding(.horizontal)
         }
     }
 }
 
 @Observable
 class AppRouter: MasterMindRouter {
+    // I took a shortcut here due to time constraints
+
     var routeState: RouteState = .game
+    var reset: () -> Void = { }
 
     enum RouteState {
         case game, success, failure
     }
 
-    func routeToSuccess() { routeState = .success }
-    func routeToFailure() { routeState = .failure }
+    func routeToSuccess(reset: @escaping () -> Void) {
+        routeState = .success
+        self.reset = { [weak self] in
+            reset()
+            self?.routeState = .game
+        }
+    }
+
+    func routeToFailure(reset: @escaping () -> Void) {
+        routeState = .failure
+        self.reset = { [weak self] in
+            reset()
+            self?.routeState = .game
+        }
+    }
 }

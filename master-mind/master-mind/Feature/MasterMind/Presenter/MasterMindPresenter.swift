@@ -13,8 +13,8 @@ protocol MasterMindViewInterface: AnyObject {
 }
 
 protocol MasterMindRouter {
-    @MainActor func routeToSuccess()
-    @MainActor func routeToFailure()
+    @MainActor func routeToSuccess(reset: @escaping () -> Void)
+    @MainActor func routeToFailure(reset: @escaping () -> Void)
 }
 
 class MasterMindPresenter: MasterMindViewPresenter {
@@ -40,10 +40,10 @@ class MasterMindPresenter: MasterMindViewPresenter {
         do {
             switch try gameInteractor.submit(guess: guess) {
             case .failed:
-                router.routeToFailure()
+                router.routeToFailure { [weak self] in self?.resetGame() }
 
             case .success:
-                router.routeToSuccess()
+                router.routeToSuccess { [weak self] in self?.resetGame() }
 
             case .ongoing(let feedback):
                 view.update(feedback: feedback)
