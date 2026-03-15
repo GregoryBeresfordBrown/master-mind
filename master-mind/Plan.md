@@ -20,3 +20,4 @@
 
 Notes:
     - Using text fields was cumbersome
+    - Skipping presenter test, too much time

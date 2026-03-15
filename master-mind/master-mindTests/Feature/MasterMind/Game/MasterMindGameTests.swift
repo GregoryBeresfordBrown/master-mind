@@ -27,8 +27,11 @@ struct MasterMindGameTests {
         let _ = game.startNewGame(limit: 10)
         let state = try game.submit(guess: "EFGH")
 
-        try #require(state.count == generation.secret.count)
-        try #require(state.allSatisfy { $0 == .noMatch } )
+        try #require(
+            state == .ongoing([
+                .noMatch, .noMatch, .noMatch, .noMatch
+            ])
+        )
     }
 
     @Test func submitGuess_withCorrectMatch_returnsCorrectFeedback() throws {
@@ -36,7 +39,7 @@ struct MasterMindGameTests {
         let _ = game.startNewGame(limit: 10)
         let state = try game.submit(guess: "ABCD")
 
-        try #require(state.allSatisfy { $0 == .correctInCorrectPosition } )
+        try #require(state == .success)
     }
 
     @Test func submitGuess_withIncorrectMatches_returnsPositionFeedback() throws {
@@ -45,12 +48,12 @@ struct MasterMindGameTests {
         let state = try game.submit(guess: "BCEF")
 
         try #require(
-            state == [
+            state == .ongoing([
                 .correctInWrongPosition,
                 .correctInWrongPosition,
                 .noMatch,
                 .noMatch
-            ]
+            ])
         )
     }
 
@@ -59,7 +62,14 @@ struct MasterMindGameTests {
         let _ = game.startNewGame(limit: 10)
         let state = try game.submit(guess: "CDAB")
 
-        try #require(state.allSatisfy { $0 == .correctInWrongPosition } )
+        try #require(
+            state == .ongoing([
+                .correctInWrongPosition,
+                .correctInWrongPosition,
+                .correctInWrongPosition,
+                .correctInWrongPosition
+            ])
+        )
     }
 
     @Test func submitGuess_withLengthMismatch_throwsBadGuessFormat() throws {
@@ -71,29 +81,25 @@ struct MasterMindGameTests {
         }
     }
 
-    @Test func submitGuess_withoutGameStart_throwsError() throws {
+    @Test func submitGuess_withoutGameStart_isFailed() throws {
         let clock = FixedClock()
         let game = MasterMindGame(secretGenerator: generation, gameClock: clock)
 
-        #expect(throws: MasterMindGameError.runOutOfTime) {
-            try game.submit(guess: "")
-        }
+        let state = try game.submit(guess: "")
+
+        try #require(state == .failed)
     }
 
-    @Test func submitGuess_afterExpiry_throwsError() throws {
+    @Test func submitGuess_afterExpiry_isFailed() throws {
         let clock = FixedClock()
         let game = MasterMindGame(secretGenerator: generation, gameClock: clock)
         let _ = game.startNewGame(limit: 10)
 
-        #expect(throws: Never.self) {
-            try game.submit(guess: "ABCD")
-        }
-
         clock.startTime = clock.startTime + 10.1
 
-        #expect(throws: MasterMindGameError.runOutOfTime) {
-            try game.submit(guess: "ABCD")
-        }
+        let state = try game.submit(guess: "ABCD")
+
+        try #require(state == .failed)
     }
 
     @Test func startNewGame_resetsExpiry_guessSucceeds() throws {
@@ -103,15 +109,18 @@ struct MasterMindGameTests {
 
         clock.startTime = clock.startTime + 10.1
 
-        #expect(throws: MasterMindGameError.runOutOfTime) {
-            try game.submit(guess: "ABCD")
-        }
+        try #require(game.submit(guess: "ABCD") == .failed)
 
         let _ = game.startNewGame(limit: 10)
 
-        #expect(throws: Never.self) {
-            try game.submit(guess: "ABCD")
-        }
+        try #require(
+            game.submit(guess: "DCBA") == .ongoing([
+                .correctInWrongPosition,
+                .correctInWrongPosition,
+                .correctInWrongPosition,
+                .correctInWrongPosition
+            ])
+        )
     }
 }
 

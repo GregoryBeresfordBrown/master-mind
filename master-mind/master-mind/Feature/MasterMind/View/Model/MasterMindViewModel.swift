@@ -10,12 +10,15 @@ import SwiftUI
 @Observable
 class MasterMindViewModel: MasterMindViewInterface {
     var gameState: [MasterMindGuessState] = []
+    var currentGuess: String {
+        String(gameState.map(\.guess))
+    }
 
     func reset(feedback: [MasterMindFeedback]) {
         gameState = feedback.map {
             MasterMindGuessState(
                 guess: "-",
-                feedback: $0
+                color: $0.color
             )
         }
     }
@@ -24,8 +27,18 @@ class MasterMindViewModel: MasterMindViewInterface {
         gameState = zip(gameState, feedback).map { gameState, feedback in
             MasterMindGuessState(
                 guess: gameState.guess,
-                feedback: feedback
+                color: feedback.color
             )
+        }
+    }
+}
+
+private extension MasterMindFeedback {
+    var color: Color {
+        switch self {
+        case .correctInCorrectPosition: .green
+        case .correctInWrongPosition:   .orange
+        case .noMatch:                  .red
         }
     }
 }
@@ -33,19 +46,19 @@ class MasterMindViewModel: MasterMindViewInterface {
 @Observable
 class MasterMindGuessState: Equatable, Hashable {
     var guess: Character
-    let feedback: MasterMindFeedback
+    let color: Color
 
-    init(guess: Character, feedback: MasterMindFeedback) {
+    init(guess: Character, color: Color) {
         self.guess = guess
-        self.feedback = feedback
+        self.color = color
     }
 
     static func == (lhs: MasterMindGuessState, rhs: MasterMindGuessState) -> Bool {
-        lhs.guess == rhs.guess && lhs.feedback == rhs.feedback
+        lhs.guess == rhs.guess && lhs.color == rhs.color
     }
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(guess)
-        hasher.combine(feedback)
+        hasher.combine(color)
     }
 }

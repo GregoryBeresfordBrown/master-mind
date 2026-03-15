@@ -23,6 +23,27 @@ class MasterMindPresenter: MasterMindViewPresenter {
     }
 
     func viewDidAppear() {
+        resetGame()
+    }
+
+    func didSubmitGuess(_ guess: String) {
+        do {
+            switch try gameInteractor.submit(guess: guess) {
+            case .failed:
+                break; // Todo: navigate
+            case .success:
+                break; // Todo: navigate
+            case .ongoing(let feedback):
+                view.update(feedback: feedback)
+            }
+
+        }  catch {
+            // Broken game, just reset it
+            resetGame()
+        }
+    }
+
+    private func resetGame() {
         view.reset(
             feedback: gameInteractor.startNewGame(
                 limit: 60

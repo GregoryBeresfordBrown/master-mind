@@ -10,6 +10,7 @@ import SwiftUI
 struct LetterPickerView: View {
     private let letters = Array("-0ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     @Binding var selectedLetter: Character
+    let color: Color
 
     var body: some View {
         Picker("Letter", selection: $selectedLetter) {
@@ -23,11 +24,12 @@ struct LetterPickerView: View {
         .overlay {
             RoundedRectangle(cornerRadius: 6)
                 .stroke(.primary, lineWidth: 3)
+                .foregroundStyle(color)
         }
     }
 }
 
 #Preview {
     @Previewable @State var selectedLetter: Character = "-"
-    LetterPickerView(selectedLetter: $selectedLetter)
+    LetterPickerView(selectedLetter: $selectedLetter, color: .blue)
 }

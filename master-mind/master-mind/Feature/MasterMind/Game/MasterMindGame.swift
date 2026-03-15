@@ -19,6 +19,12 @@ struct DefaultSecretGenerator: SecretGenerator {
     }
 }
 
+enum MasterMindGameState: Equatable {
+    case success
+    case failed
+    case ongoing([MasterMindFeedback])
+}
+
 enum MasterMindFeedback: Equatable {
     case correctInWrongPosition
     case correctInCorrectPosition
@@ -34,7 +40,7 @@ struct DefaultGameClock: GameClock {
 }
 
 enum MasterMindGameError: Error {
-    case badGuessLength, runOutOfTime
+    case badGuessLength
 }
 
 class MasterMindGame {
@@ -63,21 +69,25 @@ class MasterMindGame {
         return (0..<secret.count).map { _ in .noMatch }
     }
 
-    func submit(guess: String) throws(MasterMindGameError) -> [MasterMindFeedback] {
+    func submit(guess: String) throws(MasterMindGameError) -> MasterMindGameState {
         guard guess.count == secret.count else {
             throw .badGuessLength
         }
         guard gameClock.now() <= timelimit else {
-            throw .runOutOfTime
+            return .failed
         }
 
         let guess = Array(guess.uppercased())
 
-        return (0..<secret.count).map { (i:Int) -> MasterMindFeedback in
+        let result = (0..<secret.count).map { (i:Int) -> MasterMindFeedback in
             secret[i] == guess[i]
                 ? .correctInCorrectPosition
                 : secretContains(char: guess[i])
         }
+
+        return result.allSatisfy { $0 == .correctInCorrectPosition }
+            ? .success
+            : .ongoing(result)
     }
 
     private func secretContains(char: Character) -> MasterMindFeedback {

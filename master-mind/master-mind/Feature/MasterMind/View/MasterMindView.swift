@@ -9,6 +9,7 @@ import SwiftUI
 
 protocol MasterMindViewPresenter {
     func viewDidAppear()
+    func didSubmitGuess(_ guess: String)
 }
 
 struct MasterMindView: View {
@@ -23,9 +24,21 @@ struct MasterMindView: View {
 
             HStack {
                 ForEach(viewModel.gameState.indices, id: \.self) { i in
-                    LetterPickerView(selectedLetter: $viewModel.gameState[i].guess)
+                    LetterPickerView(
+                        selectedLetter: $viewModel.gameState[i].guess,
+                        color: viewModel.gameState[i].color
+                    )
                 }
             }
+
+            Button {
+                presenter.didSubmitGuess(viewModel.currentGuess)
+            } label: {
+                Text("Submit")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .padding(.horizontal)
         }
         .padding()
         .onAppear {

@@ -6,6 +6,7 @@
 //
 
 import Testing
+import SwiftUI
 @testable import master_mind
 
 @Suite("MasterMindViewModel")
@@ -19,9 +20,9 @@ struct MasterMindViewModelTest {
 
         try #require(
             model.gameState == [
-                MasterMindGuessState(guess: "-", feedback: .correctInWrongPosition),
-                MasterMindGuessState(guess: "-", feedback: .noMatch),
-                MasterMindGuessState(guess: "-", feedback: .correctInCorrectPosition)
+                MasterMindGuessState(guess: "-", color: .orange),
+                MasterMindGuessState(guess: "-", color: .red),
+                MasterMindGuessState(guess: "-", color: .green)
             ]
         )
     }
@@ -38,9 +39,9 @@ struct MasterMindViewModelTest {
 
         try #require(
             model.gameState == [
-                MasterMindGuessState(guess: "-", feedback: .correctInWrongPosition),
-                MasterMindGuessState(guess: "-", feedback: .noMatch),
-                MasterMindGuessState(guess: "-", feedback: .correctInCorrectPosition)
+                MasterMindGuessState(guess: "-", color: .orange),
+                MasterMindGuessState(guess: "-", color: .red),
+                MasterMindGuessState(guess: "-", color: .green)
             ]
         )
     }
@@ -58,9 +59,9 @@ struct MasterMindViewModelTest {
 
         try #require(
             model.gameState == [
-                MasterMindGuessState(guess: "A", feedback: .correctInWrongPosition),
-                MasterMindGuessState(guess: "-", feedback: .noMatch),
-                MasterMindGuessState(guess: "-", feedback: .correctInCorrectPosition)
+                MasterMindGuessState(guess: "A", color: .orange),
+                MasterMindGuessState(guess: "-", color: .red),
+                MasterMindGuessState(guess: "-", color: .green)
             ]
         )
     }
