@@ -54,6 +54,15 @@ struct MasterMindGameTests {
             ]
         )
     }
+
+    @Test func submitGuess_withAllIncorrectMatches_returnsPositionFeedback() throws {
+        let game = MasterMindGame(secretGenerator: generation)
+        let _ = game.startNewGame()
+        let state = game.submit(guess: "CDAB")
+
+        try #require(state.count == generation.secret.count)
+        try #require(state.allSatisfy { $0 == .correctInWrongPosition } )
+    }
 }
 
 
