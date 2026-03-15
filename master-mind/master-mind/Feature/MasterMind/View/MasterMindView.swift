@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  MasterMindView.swift
 //  master-mind
 //
 //  Created by Gregory Beresford Brown on 15/03/2026.
@@ -7,7 +7,12 @@
 
 import SwiftUI
 
-struct ContentView: View {
+protocol MasterMindViewPresenter {}
+
+struct MasterMindView: View {
+    let viewModel: MasterMindViewModel
+    let presenter: MasterMindViewPresenter
+
     var body: some View {
         VStack {
             Image(systemName: "globe")
@@ -17,8 +22,4 @@ struct ContentView: View {
         }
         .padding()
     }
-}
-
-#Preview {
-    ContentView()
 }

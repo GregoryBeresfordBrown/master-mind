@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct master_mindApp: App {
+    @State private var masterMind = MasterMind()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            masterMind.makeView()
         }
     }
 }
