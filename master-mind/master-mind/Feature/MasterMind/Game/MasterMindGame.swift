@@ -11,6 +11,14 @@ protocol SecretGenerator {
     func generateSecret() -> Array<Character>
 }
 
+struct DefaultSecretGenerator: SecretGenerator {
+    private let letters = Array("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+    func generateSecret() -> Array<Character> {
+        (0..<4).compactMap { _ in letters.randomElement() }
+    }
+}
+
 enum MasterMindFeedback: Equatable {
     case correctInWrongPosition
     case correctInCorrectPosition
@@ -37,7 +45,7 @@ class MasterMindGame {
     private var timelimit: Date
 
     init(
-        secretGenerator: SecretGenerator,
+        secretGenerator: SecretGenerator = DefaultSecretGenerator(),
         gameClock: GameClock = DefaultGameClock()
     ) {
         self.secretGenerator = secretGenerator
