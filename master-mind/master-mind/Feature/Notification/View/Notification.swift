@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class Notification: Identifiable {
+class GameNotification: Identifiable {
     let id = UUID()
     private let label: String
     private var continuation: CheckedContinuation<Void, Never>?

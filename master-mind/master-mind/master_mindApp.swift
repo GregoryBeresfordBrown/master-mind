@@ -20,29 +20,43 @@ struct master_mindApp: App {
 
     var body: some Scene {
         WindowGroup {
-            masterMind.makeView()
-                .sheet(item: Binding(get: { router.notification }, set: { router.notification = $0 })) { notification in
-                    notification.makeView()
-                }
+            AppView(router: router, masterMind: masterMind)
         }
+    }
+}
+
+struct AppView: View {
+    @Bindable var router: AppRouter
+    let masterMind: MasterMind
+
+    var body: some View {
+        masterMind.makeView()
+            .sheet(item: $router.notification) { notification in
+                notification.makeView()
+            }
     }
 }
 
 @Observable
 class AppRouter: MasterMindRouter {
-    var notification: Notification?
+    var notification: GameNotification?
 
     func routeToSuccess() async {
-        let notification = Notification(label: "You won!")
+        let notification = GameNotification(label: "You won!")
         self.notification = notification
         await notification.completion
         self.notification = nil
     }
 
     func routeToFailure() async {
-        let notification = Notification(label: "Game over!")
+        let notification = GameNotification(label: "Game over!")
         self.notification = notification
         await notification.completion
         self.notification = nil
     }
+}
+
+#Preview {
+    let router = AppRouter()
+    AppView(router: router, masterMind: MasterMind(router: router))
 }
