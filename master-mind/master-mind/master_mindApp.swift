@@ -20,56 +20,29 @@ struct master_mindApp: App {
 
     var body: some Scene {
         WindowGroup {
-            switch router.routeState {
-            case .game:    masterMind.makeView()
-            case .success: notification("You won!")
-            case .failure: notification("Game over!")
-            }
-        }
-    }
-
-    func notification(_ label: String) -> some View {
-        VStack {
-            Text(label)
-                .font(.largeTitle)
-                .padding()
-
-            Button {
-                router.reset()
-            } label: {
-                Text("Retry")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .padding(.horizontal)
+            masterMind.makeView()
+                .sheet(item: Binding(get: { router.notification }, set: { router.notification = $0 })) { notification in
+                    notification.makeView()
+                }
         }
     }
 }
 
 @Observable
 class AppRouter: MasterMindRouter {
-    // I took a shortcut here due to time constraints
+    var notification: Notification?
 
-    var routeState: RouteState = .game
-    var reset: () -> Void = { }
-
-    enum RouteState {
-        case game, success, failure
+    func routeToSuccess() async {
+        let notification = Notification(label: "You won!")
+        self.notification = notification
+        await notification.completion
+        self.notification = nil
     }
 
-    func routeToSuccess(reset: @escaping () -> Void) {
-        routeState = .success
-        self.reset = { [weak self] in
-            reset()
-            self?.routeState = .game
-        }
-    }
-
-    func routeToFailure(reset: @escaping () -> Void) {
-        routeState = .failure
-        self.reset = { [weak self] in
-            reset()
-            self?.routeState = .game
-        }
+    func routeToFailure() async {
+        let notification = Notification(label: "Game over!")
+        self.notification = notification
+        await notification.completion
+        self.notification = nil
     }
 }
