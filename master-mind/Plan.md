@@ -21,3 +21,6 @@
 Notes:
     - Using text fields was cumbersome
     - Skipping presenter test, too much time
+    - Routing is not perfect but most of the way there
+    
+
